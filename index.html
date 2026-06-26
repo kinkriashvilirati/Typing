@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Test</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="stats-panel" aria-label="Typing test stats">
+      <div class="metrics">
+        <div class="metric">
+          <span class="metric-label">Time Remaining</span>
+          <strong id="timeRemaining">3:00</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">WPM</span>
+          <strong id="wpmValue">0</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Accuracy</span>
+          <strong id="accuracyValue">100%</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Progress</span>
+          <strong id="progressPercent">0%</strong>
+        </div>
+      </div>
+
+      <div class="progress-row" aria-label="Progress">
+        <div class="progress-meta">
+          <span>Progress</span>
+          <span id="progressCount">0 / 0 characters</span>
+        </div>
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="typing-panel" aria-label="Typing text">
+      <div class="typing-meta">
+        <div class="typing-title-block">
+          <span id="textTitle">Random Text</span>
+          <span id="textPoolCount">0 texts available</span>
+        </div>
+        <div class="text-controls" aria-label="Text controls">
+          <button id="previousTextButton" type="button">Prev</button>
+          <button id="randomTextButton" type="button">Random</button>
+          <button id="nextTextButton" type="button">Next</button>
+        </div>
+      </div>
+      <div id="textChoices" class="text-choices" aria-label="Choose typing text"></div>
+      <div id="textDisplay" class="text-display" aria-live="polite"></div>
+    </section>
+
+    <section id="resultsPanel" class="results-panel" aria-label="Typing test results" hidden>
+      <div class="results-header">
+        <h1>Results</h1>
+        <button id="restartButton" type="button">Restart</button>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-item">
+          <span>Final WPM</span>
+          <strong id="finalWpm">0</strong>
+        </div>
+        <div class="result-item">
+          <span>Accuracy</span>
+          <strong id="finalAccuracy">100%</strong>
+        </div>
+        <div class="result-item">
+          <span>Correct Characters</span>
+          <strong id="finalCorrect">0</strong>
+        </div>
+        <div class="result-item">
+          <span>Mistakes</span>
+          <strong id="finalMistakes">0</strong>
+        </div>
+        <div class="result-item">
+          <span>Elapsed Time</span>
+          <strong id="finalElapsed">0:00</strong>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
