@@ -5,8 +5,8 @@ const TEST_TEXTS = [
     text: "I am enough. Right now as I am I am enough. I do not need to change to be enough. I do not need to do more to be enough. I am enough just by existing. I am enough because I exist. I stop trying to prove myself. I am already enough. Others may not see it but I am enough. I have always been enough. I will always be enough. I believe it now. I am enough. I say it again. I am enough. I let it sink in. I am enough."
   },
   {
-    title: "Steady Practice",
-    text: "Small steps become strong habits. I breathe, focus, and type one clear word at a time. I do not rush the process. I notice each letter, each space, and each pause. When I make a mistake, I return calmly and keep going. Practice is not about being perfect. Practice is about showing up with patience, attention, and honest effort."
+    title: "Second test",
+    text: "I am happy now. I do not wait for things to change. I am happy now and things will change. My state of being comes first. Reality comes second. I am happy now and I watch what happens. I do not wait to be happy. I do not say I will be happy when this or that happens. I know it works the other way. I am happy now. I choose to be happy now. I am happy now and the world follows. I am happy now. This is the secret. I am happy now."
   }
 ];
 const TEST_DURATION_SECONDS = 180;
