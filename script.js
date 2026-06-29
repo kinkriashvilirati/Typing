@@ -14,6 +14,8 @@ const TEST_TEXTS = [
   }
 ];
 const TEST_DURATION_SECONDS = 180;
+const STORAGE_KEY = "typeflow-player-v1";
+const MAX_SAVED_SCORES = 10;
 
 const textTitle = document.getElementById("textTitle");
 const textPoolCount = document.getElementById("textPoolCount");
@@ -32,9 +34,21 @@ const finalCorrect = document.getElementById("finalCorrect");
 const finalMistakes = document.getElementById("finalMistakes");
 const finalElapsed = document.getElementById("finalElapsed");
 const restartButton = document.getElementById("restartButton");
+const resultRestartButton = document.getElementById("resultRestartButton");
 const previousTextButton = document.getElementById("previousTextButton");
 const randomTextButton = document.getElementById("randomTextButton");
 const nextTextButton = document.getElementById("nextTextButton");
+const profileForm = document.getElementById("profileForm");
+const playerName = document.getElementById("playerName");
+const profileGreeting = document.getElementById("profileGreeting");
+const profileAvatar = document.getElementById("profileAvatar");
+const scoreboardTitle = document.getElementById("scoreboardTitle");
+const scoreboardBody = document.getElementById("scoreboardBody");
+const emptyScoreboard = document.getElementById("emptyScoreboard");
+const bestWpm = document.getElementById("bestWpm");
+const bestAccuracy = document.getElementById("bestAccuracy");
+const testsFinished = document.getElementById("testsFinished");
+const clearScoresButton = document.getElementById("clearScoresButton");
 
 let selectedTextIndex = getRandomTextIndex();
 let selectedTest = TEST_TEXTS[selectedTextIndex];
@@ -45,6 +59,7 @@ let started = false;
 let finished = false;
 let startTime = null;
 let timerId = null;
+let player = loadPlayer();
 
 const ignoredKeys = new Set([
   "Shift",
@@ -98,8 +113,17 @@ function renderText() {
 }
 
 function handleKeydown(event) {
+  if (isFormField(event.target)) {
+    return;
+  }
+
   if (event.key === " " || event.key === "Backspace" || event.key === "Tab") {
     event.preventDefault();
+  }
+
+  if (event.key === "Escape") {
+    resetCurrentTest();
+    return;
   }
 
   if (finished) {
@@ -191,7 +215,9 @@ function endTest() {
   updateActiveCharacter();
   updateStats();
   updateResults();
+  saveCurrentScore();
   resultsPanel.hidden = false;
+  resultsPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 function resetTest() {
@@ -264,6 +290,143 @@ function updateResults() {
   finalCorrect.textContent = currentIndex;
   finalMistakes.textContent = mistakes;
   finalElapsed.textContent = formatTime(Math.floor(elapsedSeconds));
+}
+
+function loadPlayer() {
+  const fallback = { name: "Guest", scores: [] };
+
+  try {
+    const savedPlayer = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+    if (!savedPlayer || typeof savedPlayer !== "object") {
+      return fallback;
+    }
+
+    return {
+      name: typeof savedPlayer.name === "string" && savedPlayer.name.trim()
+        ? savedPlayer.name.trim().slice(0, 24)
+        : fallback.name,
+      scores: Array.isArray(savedPlayer.scores)
+        ? savedPlayer.scores
+          .filter((score) => score && typeof score === "object")
+          .slice(0, MAX_SAVED_SCORES)
+        : []
+    };
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function persistPlayer() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(player));
+  } catch (error) {
+    console.warn("Typeflow could not save this player.", error);
+  }
+}
+
+function saveCurrentScore() {
+  const elapsedSeconds = getElapsedSeconds();
+  const score = {
+    text: selectedTest.title,
+    wpm: calculateWpm(elapsedSeconds),
+    accuracy: calculateAccuracy(),
+    elapsed: Math.floor(elapsedSeconds),
+    completedAt: new Date().toISOString()
+  };
+
+  player.scores.unshift(score);
+  player.scores = player.scores.slice(0, MAX_SAVED_SCORES);
+  persistPlayer();
+  renderScoreboard();
+}
+
+function savePlayerName(event) {
+  event.preventDefault();
+  const nextName = playerName.value.trim().slice(0, 24);
+
+  if (!nextName) {
+    playerName.focus();
+    return;
+  }
+
+  player.name = nextName;
+  playerName.value = "";
+  playerName.blur();
+  persistPlayer();
+  renderPlayer();
+}
+
+function clearScores() {
+  if (player.scores.length === 0) {
+    return;
+  }
+
+  if (!window.confirm("Clear all saved scores for this player?")) {
+    return;
+  }
+
+  player.scores = [];
+  persistPlayer();
+  renderScoreboard();
+}
+
+function renderPlayer() {
+  profileGreeting.textContent = `Welcome, ${player.name}`;
+  profileAvatar.textContent = player.name.charAt(0).toUpperCase() || "G";
+  scoreboardTitle.textContent = `${player.name}'s scoreboard`;
+  playerName.placeholder = player.name === "Guest" ? "Enter your name" : "Change player name";
+  renderScoreboard();
+}
+
+function renderScoreboard() {
+  const scores = player.scores;
+  scoreboardBody.innerHTML = "";
+  emptyScoreboard.hidden = scores.length > 0;
+  clearScoresButton.disabled = scores.length === 0;
+  testsFinished.textContent = scores.length;
+  bestWpm.textContent = scores.length ? Math.max(...scores.map((score) => Number(score.wpm) || 0)) : "—";
+  bestAccuracy.textContent = scores.length
+    ? `${Math.max(...scores.map((score) => Number(score.accuracy) || 0))}%`
+    : "—";
+
+  scores.forEach((score) => {
+    const row = document.createElement("tr");
+    const values = [
+      score.text || "Typing test",
+      Number(score.wpm) || 0,
+      `${Number(score.accuracy) || 0}%`,
+      formatTime(Number(score.elapsed) || 0),
+      formatScoreDate(score.completedAt)
+    ];
+
+    values.forEach((value) => {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      row.appendChild(cell);
+    });
+
+    scoreboardBody.appendChild(row);
+  });
+}
+
+function formatScoreDate(dateString) {
+  const date = new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) {
+    return "—";
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(date);
+}
+
+function isFormField(target) {
+  return target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
 }
 
 function calculateWpm(elapsedSeconds) {
@@ -349,9 +512,13 @@ function renderTextChoices() {
 
 renderText();
 updateStats();
+renderPlayer();
 
 document.addEventListener("keydown", handleKeydown);
 restartButton.addEventListener("click", resetTest);
+resultRestartButton.addEventListener("click", resetTest);
+profileForm.addEventListener("submit", savePlayerName);
+clearScoresButton.addEventListener("click", clearScores);
 previousTextButton.addEventListener("click", () => {
   choosePreviousText();
   previousTextButton.blur();

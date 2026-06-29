@@ -8,6 +8,32 @@
 </head>
 <body>
   <main class="app-shell">
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Focus mode</p>
+        <h1>Typeflow</h1>
+        <p class="app-subtitle">Build rhythm, accuracy, and speed—one word at a time.</p>
+      </div>
+      <button id="restartButton" class="restart-button" type="button" title="Restart the current test">
+        <span aria-hidden="true">↻</span> Restart
+      </button>
+    </header>
+
+    <section class="profile-panel" aria-label="Player profile">
+      <div class="profile-copy">
+        <span class="profile-avatar" id="profileAvatar" aria-hidden="true">G</span>
+        <div>
+          <strong id="profileGreeting">Welcome, Guest</strong>
+          <span>Your name and scores are saved on this device.</span>
+        </div>
+      </div>
+      <form id="profileForm" class="profile-form">
+        <label class="sr-only" for="playerName">Player name</label>
+        <input id="playerName" name="playerName" type="text" maxlength="24" placeholder="Enter your name" autocomplete="nickname">
+        <button type="submit">Save player</button>
+      </form>
+    </section>
+
     <section class="stats-panel" aria-label="Typing test stats">
       <div class="metrics">
         <div class="metric">
@@ -53,12 +79,13 @@
       </div>
       <div id="textChoices" class="text-choices" aria-label="Choose typing text"></div>
       <div id="textDisplay" class="text-display" aria-live="polite"></div>
+      <p class="typing-hint"><kbd>Start typing</kbd> · Use <kbd>Backspace</kbd> to correct · Press <kbd>Esc</kbd> to restart</p>
     </section>
 
     <section id="resultsPanel" class="results-panel" aria-label="Typing test results" hidden>
       <div class="results-header">
         <h1>Results</h1>
-        <button id="restartButton" type="button">Restart</button>
+        <button id="resultRestartButton" class="restart-button" type="button">Try again</button>
       </div>
 
       <div class="results-grid">
@@ -82,6 +109,32 @@
           <span>Elapsed Time</span>
           <strong id="finalElapsed">0:00</strong>
         </div>
+      </div>
+    </section>
+
+    <section class="scoreboard-panel" aria-label="Player scoreboard">
+      <div class="scoreboard-header">
+        <div>
+          <p class="eyebrow">Personal bests</p>
+          <h2 id="scoreboardTitle">Guest's scoreboard</h2>
+        </div>
+        <button id="clearScoresButton" class="ghost-button" type="button">Clear scores</button>
+      </div>
+
+      <div class="score-summary">
+        <div><span>Best WPM</span><strong id="bestWpm">—</strong></div>
+        <div><span>Best accuracy</span><strong id="bestAccuracy">—</strong></div>
+        <div><span>Tests finished</span><strong id="testsFinished">0</strong></div>
+      </div>
+
+      <div class="score-table-wrap">
+        <table class="score-table">
+          <thead>
+            <tr><th>Text</th><th>WPM</th><th>Accuracy</th><th>Time</th><th>Date</th></tr>
+          </thead>
+          <tbody id="scoreboardBody"></tbody>
+        </table>
+        <p id="emptyScoreboard" class="empty-scoreboard">Finish a typing test and your score will appear here.</p>
       </div>
     </section>
   </main>
