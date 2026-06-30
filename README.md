@@ -1,6 +1,6 @@
-# Typeflow
+# Codev-RK
 
-A React and Tailwind CSS typing test for practicing speed and accuracy. Player names and the ten most recent results are stored locally in the browser.
+A React and Tailwind CSS workspace for banner-development tools and creative experiments. Typeflow lives inside the Playground, where player names and recent results are stored locally in the browser.
 
 ## Commands
 
@@ -14,14 +14,17 @@ npm run build
 
 ```text
 src/
-├── components/   Reusable UI grouped by feature
-├── constants/    App-wide configuration
-├── data/         Typing test content
-├── hooks/        Typing and player state logic
-├── utils/        Pure calculations, formatting, and storage
-├── App.jsx       Feature composition only
-├── index.css     Tailwind import, theme tokens, and global styles
-└── main.jsx      React entry point
+├── features/
+│   ├── playground/       Creative experiments and the typing test
+│   └── work-tools/       Banner-development utilities
+├── pages/                Top-level landing page
+├── shared/
+│   ├── layout/           Navigation and page layout
+│   ├── navigation/       Route definitions and hash navigation
+│   └── ui/               Reusable UI components
+├── App.jsx               Top-level page selection only
+├── index.css             Tailwind import, theme tokens, and global styles
+└── main.jsx              React entry point
 ```
 
-Add new typing passages only in `src/data/typingTests.js`. Shared behavior belongs in hooks or utilities rather than inside page components.
+Add new typing passages only in `src/features/playground/typing/data/typingTests.js`. Keep feature-specific code inside its feature and move code to `shared/` only when multiple features actually use it.
