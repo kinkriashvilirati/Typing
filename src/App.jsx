@@ -1,121 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useRef } from 'react'
+import AppHeader from './components/layout/AppHeader'
+import ProfilePanel from './components/profile/ProfilePanel'
+import ResultsPanel from './components/results/ResultsPanel'
+import Scoreboard from './components/scoreboard/Scoreboard'
+import StatsPanel from './components/stats/StatsPanel'
+import TypingPanel from './components/typing/TypingPanel'
+import { TEST_DURATION_SECONDS } from './constants/config'
+import { typingTests } from './data/typingTests'
+import { usePlayer } from './hooks/usePlayer'
+import { useTypingTest } from './hooks/useTypingTest'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { name, scores, saveName, saveScore, clearScores } = usePlayer()
+  const typing = useTypingTest(typingTests, TEST_DURATION_SECONDS)
+  const savedResultId = useRef(null)
+
+  useEffect(() => {
+    if (!typing.result || savedResultId.current === typing.result.id) return
+
+    savedResultId.current = typing.result.id
+    saveScore({
+      text: typing.selectedTest.title,
+      wpm: typing.result.wpm,
+      accuracy: typing.result.accuracy,
+      elapsed: typing.result.elapsed,
+      completedAt: new Date().toISOString(),
+    })
+  }, [saveScore, typing.result, typing.selectedTest.title])
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <main className="mx-auto w-[min(1024px,calc(100%-40px))] py-8 max-sm:w-[calc(100%-28px)] max-sm:py-5">
+      <AppHeader onRestart={typing.resetTest} />
+      <div className="space-y-6">
+        <ProfilePanel
+          name={name}
+          onSaveName={saveName}
+        />
+        <StatsPanel stats={typing.stats} />
+        <TypingPanel
+          tests={typingTests}
+          selectedIndex={typing.selectedTextIndex}
+          selectedTest={typing.selectedTest}
+          characterStates={typing.characterStates}
+          currentIndex={typing.currentIndex}
+          finished={typing.finished}
+          onSelect={typing.selectText}
+          onPrevious={typing.selectPreviousText}
+          onRandom={typing.selectRandomText}
+          onNext={typing.selectNextText}
+        />
+        {typing.result && (
+          <ResultsPanel result={typing.result} onRestart={typing.resetTest} />
+        )}
+        <Scoreboard
+          name={name}
+          scores={scores}
+          onClear={clearScores}
+        />
+      </div>
+    </main>
   )
 }
 
