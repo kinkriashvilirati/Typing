@@ -12,7 +12,7 @@ const destinations = [
   {
     eyebrow: 'Play',
     title: 'Playground',
-    description: 'Experiments, challenges, and the Typeflow typing test.',
+    description: 'Typeflow, TimerBattle, and a growing collection of creative challenges.',
     route: ROUTES.playground,
     accent: 'from-success/25 to-success/5',
   },

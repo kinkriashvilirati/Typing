@@ -1,6 +1,6 @@
 # Codev-RK
 
-A React and Tailwind CSS workspace for banner-development tools and creative experiments. Typeflow lives inside the Playground, where player names and recent results are stored locally in the browser.
+A React and Tailwind CSS workspace for banner-development tools and creative experiments. The Playground currently includes Typeflow and the TimerBattle reaction game.
 
 ## Commands
 

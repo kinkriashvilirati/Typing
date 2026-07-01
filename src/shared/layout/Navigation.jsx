@@ -6,7 +6,7 @@ const links = [
 ]
 
 function NavLink({ route, currentRoute, children }) {
-  const isActive = route === currentRoute
+  const isActive = currentRoute === route || currentRoute.startsWith(`${route}/`)
 
   return (
     <a
