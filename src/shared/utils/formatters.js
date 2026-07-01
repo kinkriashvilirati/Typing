@@ -1,3 +1,4 @@
+// Formatting shared by game scoreboards and result panels.
 export function formatTime(totalSeconds) {
   const safeSeconds = Math.max(0, Math.trunc(totalSeconds))
   const minutes = Math.floor(safeSeconds / 60)

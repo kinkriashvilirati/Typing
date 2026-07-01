@@ -1,4 +1,4 @@
-import { formatTime } from '../../utils/formatters'
+import { formatTime } from '@/shared/utils/formatters'
 import Panel from '@/shared/ui/Panel'
 import Metric from './Metric'
 

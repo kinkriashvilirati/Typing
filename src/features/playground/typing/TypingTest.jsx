@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
-import ProfilePanel from './components/profile/ProfilePanel'
+import ScoreAuthPanel from '@/features/auth/components/ScoreAuthPanel'
+import useAuth from '@/features/auth/hooks/useAuth'
 import ResultsPanel from './components/results/ResultsPanel'
 import Scoreboard from './components/scoreboard/Scoreboard'
 import StatsPanel from './components/stats/StatsPanel'
@@ -7,32 +8,28 @@ import TypingPanel from './components/test/TypingPanel'
 import TypingHeader from './components/TypingHeader'
 import { TEST_DURATION_SECONDS } from './config'
 import { typingTests } from './data/typingTests'
-import usePlayer from './hooks/usePlayer'
+import useTypingScores from './hooks/useTypingScores'
 import useTypingTest from './hooks/useTypingTest'
 
 export default function TypingTest() {
-  const { name, scores, saveName, saveScore, clearScores } = usePlayer()
+  const { user } = useAuth()
+  const userId = user?.id
+  const { scores, isLoading, errorMessage, saveTypingScore, clearScores } = useTypingScores(userId)
   const typing = useTypingTest(typingTests, TEST_DURATION_SECONDS)
   const savedResultId = useRef(null)
 
   useEffect(() => {
-    if (!typing.result || savedResultId.current === typing.result.id) return
+    if (!userId || !typing.result || savedResultId.current === typing.result.id) return
 
     savedResultId.current = typing.result.id
-    saveScore({
-      text: typing.selectedTest.title,
-      wpm: typing.result.wpm,
-      accuracy: typing.result.accuracy,
-      elapsed: typing.result.elapsed,
-      completedAt: new Date().toISOString(),
-    })
-  }, [saveScore, typing.result, typing.selectedTest.title])
+    saveTypingScore(typing.result, typing.selectedTest.title)
+  }, [saveTypingScore, typing.result, typing.selectedTest.title, userId])
 
   return (
     <section aria-label="Typeflow typing test">
       <TypingHeader onRestart={typing.resetTest} />
       <div className="space-y-6">
-        <ProfilePanel name={name} onSaveName={saveName} />
+        <ScoreAuthPanel />
         <StatsPanel stats={typing.stats} />
         <TypingPanel
           tests={typingTests}
@@ -47,7 +44,14 @@ export default function TypingTest() {
           onNext={typing.selectNextText}
         />
         {typing.result && <ResultsPanel result={typing.result} onRestart={typing.resetTest} />}
-        <Scoreboard name={name} scores={scores} onClear={clearScores} />
+        {user && (
+          <Scoreboard
+            scores={scores}
+            isLoading={isLoading}
+            errorMessage={errorMessage}
+            onClear={clearScores}
+          />
+        )}
       </div>
     </section>
   )

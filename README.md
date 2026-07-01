@@ -2,6 +2,8 @@
 
 A React and Tailwind CSS workspace for banner-development tools and creative experiments. The Playground currently includes Typeflow and the TimerBattle reaction game.
 
+Authentication and saved game scores use Supabase. See [`supabase/README.md`](./supabase/README.md) for the required database and auth-hook setup.
+
 ## Commands
 
 ```bash

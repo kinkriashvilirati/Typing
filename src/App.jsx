@@ -1,4 +1,5 @@
 import LandingPage from '@/pages/LandingPage'
+import RegisterPage from '@/features/auth/RegisterPage'
 import PlaygroundPage from '@/features/playground/PlaygroundPage'
 import ReactionGamePage from '@/features/playground/reaction/ReactionGamePage'
 import TypingPage from '@/features/playground/typing/TypingPage'
@@ -13,6 +14,7 @@ const pages = {
   [ROUTES.playground]: PlaygroundPage,
   [ROUTES.typingGame]: TypingPage,
   [ROUTES.reactionGame]: ReactionGamePage,
+  [ROUTES.register]: RegisterPage,
 }
 
 export default function App() {

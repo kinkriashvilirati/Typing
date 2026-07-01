@@ -4,4 +4,5 @@ export const ROUTES = {
   playground: '/playground',
   typingGame: '/playground/typing',
   reactionGame: '/playground/reaction',
+  register: '/register',
 }

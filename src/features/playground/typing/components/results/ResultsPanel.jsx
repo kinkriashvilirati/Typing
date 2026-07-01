@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { formatTime } from '../../utils/formatters'
+import { formatTime } from '@/shared/utils/formatters'
 import Button from '@/shared/ui/Button'
 import Panel from '@/shared/ui/Panel'
 import ResultItem from './ResultItem'

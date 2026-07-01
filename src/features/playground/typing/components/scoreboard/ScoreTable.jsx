@@ -1,6 +1,10 @@
-import { formatScoreDate, formatTime } from '../../utils/formatters'
+import { formatScoreDate, formatTime } from '@/shared/utils/formatters'
 
-export default function ScoreTable({ scores }) {
+export default function ScoreTable({ scores, isLoading }) {
+  if (isLoading) {
+    return <p className="px-3 pt-7 pb-2.5 text-center text-muted">Loading your scores…</p>
+  }
+
   if (scores.length === 0) {
     return <p className="px-3 pt-7 pb-2.5 text-center text-muted">Finish a typing test and your score will appear here.</p>
   }
@@ -18,8 +22,8 @@ export default function ScoreTable({ scores }) {
           </tr>
         </thead>
         <tbody>
-          {scores.map((score, index) => (
-            <tr key={`${score.completedAt}-${index}`} className="text-sm text-muted-strong">
+          {scores.map((score) => (
+            <tr key={score.id} className="text-sm text-muted-strong">
               <td className="max-w-64 overflow-hidden border-b border-white/10 p-3 font-bold text-ellipsis whitespace-nowrap text-ink">{score.text || 'Typing test'}</td>
               <td className="border-b border-white/10 p-3 whitespace-nowrap">{Number(score.wpm) || 0}</td>
               <td className="border-b border-white/10 p-3 whitespace-nowrap">{Number(score.accuracy) || 0}%</td>

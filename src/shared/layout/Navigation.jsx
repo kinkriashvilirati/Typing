@@ -1,4 +1,5 @@
 import { ROUTES } from '../navigation/routes'
+import AuthNavigation from '@/features/auth/components/AuthNavigation'
 
 const links = [
   { label: 'Work tools', route: ROUTES.workTools },
@@ -33,7 +34,7 @@ export default function Navigation({ currentRoute }) {
               {link.label}
             </NavLink>
           ))}
-          <span className="px-3 py-2 text-sm font-bold text-muted-strong max-sm:px-2">Register</span>
+          <AuthNavigation currentRoute={currentRoute} />
         </div>
       </div>
     </nav>
